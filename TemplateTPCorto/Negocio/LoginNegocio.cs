@@ -15,7 +15,7 @@ namespace Negocio
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
 
             Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
-            
+
             if (credencial == null)
             {
                 throw new Exception("Credenciales incorrectas.");
@@ -41,9 +41,20 @@ namespace Negocio
             }
 
             usuarioPersistencia.LimpiarIntentosFallidos(legajo);
-            usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
+
+            if (!credencial.EsPrimerLogin)
+            {
+                usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
+            }
 
             return credencial;
+        }
+
+        public void CambiarPasswordPrimerLogin(string legajo, string nuevaPassword)
+        {
+            UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
+            // usuarioPersistencia.ActualizarPassword(legajo, nuevaPassword); 
+            usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
         }
     }
 }
