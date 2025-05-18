@@ -14,13 +14,36 @@ namespace Negocio
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
 
-            Credencial credencial = usuarioPersistencia.login(usuario);
-
-            if (credencial.Contrasena.Equals(password))
+            Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
+            
+            if (credencial == null)
             {
-                return credencial;
+                throw new Exception("Credenciales incorrectas.");
             }
-            return null;
+
+            string legajo = credencial.Legajo;
+
+            if (usuarioPersistencia.EstaBloqueado(legajo))
+            {
+                throw new Exception("El usuario está bloqueado ya que superó el límite de intentos.");
+            }
+
+            if (credencial.Contrasena != password)
+            {
+                if (usuarioPersistencia.CantidadIntentosUsuario(legajo) >= 2)
+                {
+                    usuarioPersistencia.BloquearUsuario(legajo);
+                    throw new Exception("El usuario fue bloqueado por exceder los intentos de login.");
+                }
+
+                usuarioPersistencia.RegistrarIntentoFallido(legajo);
+                throw new Exception("Credenciales incorrectas.");
+            }
+
+            usuarioPersistencia.LimpiarIntentosFallidos(legajo);
+            usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
+
+            return credencial;
         }
     }
 }
