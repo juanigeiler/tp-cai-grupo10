@@ -24,9 +24,17 @@ namespace TemplateTPCorto
             String usuario = txtUsuario.Text;
             String password = txtPassword.Text;
 
-            LoginNegocio loginNegocio = new LoginNegocio();
-            Credencial credencial = loginNegocio.login(usuario, password);
+            try
+            {
+                LoginNegocio loginNegocio = new LoginNegocio();
+                Credencial credencial = loginNegocio.login(usuario, password);
 
+                MessageBox.Show("Bienvenido " + credencial.NombreUsuario);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Persistencia.DataBase
         // Método para borrar un registro
         public void BorrarRegistro(string id, String nombreArchivo)
         {
-            archivoCsv = archivoCsv + nombreArchivo; // Cambia esta ruta al archivo CSV que deseas leer
+            archivoCsv = Path.Combine(archivoCsv, nombreArchivo);
 
             String rutaArchivo = Path.GetFullPath(archivoCsv); // Normaliza la ruta
 
@@ -82,7 +82,9 @@ namespace Persistencia.DataBase
         // Método para agregar un registro
         public void AgregarRegistro(string nombreArchivo, string nuevoRegistro)
         {
-            string archivoCsv = Path.Combine(Directory.GetCurrentDirectory(), "Persistencia", "Datos", nombreArchivo);
+            archivoCsv = Path.Combine(archivoCsv, nombreArchivo);
+
+            String rutaArchivo = Path.GetFullPath(archivoCsv);
 
             try
             {
@@ -93,9 +95,24 @@ namespace Persistencia.DataBase
                     return;
                 }
 
+                bool saltoDeLinea = false;
+                using (FileStream fs = new FileStream(rutaArchivo, FileMode.Open, FileAccess.Read))
+                {
+                    if (fs.Length > 0)
+                    {
+                        fs.Seek(-1, SeekOrigin.End);
+                        int lastByte = fs.ReadByte();
+                        saltoDeLinea = lastByte == '\n';
+                    }
+                }
+
                 // Abrir el archivo y agregar el nuevo registro
                 using (StreamWriter sw = new StreamWriter(archivoCsv, append: true))
                 {
+                    if (!saltoDeLinea) {
+                        sw.WriteLine();
+                    }
+
                     sw.WriteLine(nuevoRegistro); // Agregar la nueva línea
                 }
 
@@ -106,6 +123,18 @@ namespace Persistencia.DataBase
                 Console.WriteLine("Error al intentar agregar el registro:");
                 Console.WriteLine($"Mensaje: {e.Message}");
                 Console.WriteLine($"Pila de errores: {e.StackTrace}");
+            }
+        }
+
+        public void SobrescribirArchivo(string nombreArchivo, List<string> contenido)
+        {
+            string ruta = Path.Combine(archivoCsv, nombreArchivo);
+            using (StreamWriter sw = new StreamWriter(ruta, false))
+            {
+                foreach (var linea in contenido)
+                {
+                    sw.WriteLine(linea);
+                }
             }
         }
 
