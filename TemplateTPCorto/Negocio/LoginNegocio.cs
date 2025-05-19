@@ -10,9 +10,17 @@ namespace Negocio
 {
     public class LoginNegocio
     {
-        public Credencial login(String usuario, String password)
+        public class ResultadoLogin
+        {
+            public Credencial Credencial { get; set; }
+            public Perfil Perfil { get; set; }
+            public List<Rol> Roles { get; set; }
+        }
+
+        public ResultadoLogin login(String usuario, String password)
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
+            PerfilPersistencia perfilPersistencia = new PerfilPersistencia();
 
             Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
 
@@ -47,7 +55,21 @@ namespace Negocio
                 usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
             }
 
-            return credencial;
+            // Obtener perfil y roles
+            Perfil perfil = perfilPersistencia.ObtenerPerfilUsuario(credencial.Legajo);
+            if (perfil == null)
+            {
+                throw new Exception("El usuario no tiene un perfil asignado.");
+            }
+
+            List<Rol> roles = perfilPersistencia.ObtenerRolesPerfil(perfil.IdPerfil);
+
+            return new ResultadoLogin 
+            { 
+                Credencial = credencial,
+                Perfil = perfil,
+                Roles = roles
+            };
         }
 
         public void CambiarPasswordPrimerLogin(string legajo, string nuevaPassword)
