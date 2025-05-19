@@ -10,16 +10,25 @@ namespace Negocio
 {
     public class LoginNegocio
     {
-        public Credencial login(String usuario, String password)
+        public Credencial login(string usuario, string password, out bool requiereCambio)
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
-
             Credencial credencial = usuarioPersistencia.login(usuario);
 
-            if (credencial.Contrasena.Equals(password))
+            requiereCambio = false;
+
+            if (credencial != null && credencial.Contrasena.Equals(password))
             {
+                ResetPasswordNegocio reset = new ResetPasswordNegocio();
+
+                if (reset.DebeCambiarContrasena(credencial))
+                {
+                    requiereCambio = true;
+                }
+
                 return credencial;
             }
+
             return null;
         }
     }

@@ -91,6 +91,18 @@
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
+            // 
+            // btnCambiarPassword
+            // 
+            this.btnCambiarPassword = new System.Windows.Forms.Button();
+            this.btnCambiarPassword.Location = new System.Drawing.Point(260, 285); 
+            this.btnCambiarPassword.Name = "btnCambiarPassword";
+            this.btnCambiarPassword.Size = new System.Drawing.Size(150, 23);
+            this.btnCambiarPassword.TabIndex = 5;
+            this.btnCambiarPassword.Text = "Cambiar contraseña";
+            this.btnCambiarPassword.UseVisualStyleBackColor = true;
+            this.btnCambiarPassword.Click += new System.EventHandler(this.btnCambiarPassword_Click);
+            this.Controls.Add(this.btnCambiarPassword);
 
         }
 
@@ -101,6 +113,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnIngresar;
+        private System.Windows.Forms.Button btnCambiarPassword;
+
     }
 }
 
