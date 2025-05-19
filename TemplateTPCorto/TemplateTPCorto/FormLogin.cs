@@ -29,6 +29,12 @@ namespace TemplateTPCorto
                 LoginNegocio loginNegocio = new LoginNegocio();
                 Credencial credencial = loginNegocio.login(usuario, password);
 
+                if (credencial.EsPrimerLogin)
+                {
+                    FormPrimerLogin formPrimerLogin = new FormPrimerLogin(credencial);
+                    formPrimerLogin.ShowDialog();
+                }
+
                 MessageBox.Show("Bienvenido " + credencial.NombreUsuario);
             }
             catch (Exception ex)
