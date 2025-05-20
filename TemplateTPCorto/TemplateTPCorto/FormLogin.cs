@@ -57,23 +57,26 @@ namespace TemplateTPCorto
         }
 
         private void btnCambiarPassword_Click(object sender, EventArgs e)
-        {
-            string usuario = txtUsuario.Text;
-            string password = txtPassword.Text;
+        {     
+            try
+            {
+                string usuario = txtUsuario.Text;
+                string password = txtPassword.Text;
 
-            LoginNegocio loginNegocio = new LoginNegocio();
-            bool requiereCambio;
+                bool requiereCambio;
+                LoginNegocio loginNegocio = new LoginNegocio();
+                var resultado = loginNegocio.login(usuario, password, out requiereCambio);
 
-            Credencial cred = loginNegocio.login(usuario, password, out requiereCambio);
-
-            if (cred == null)
+                if (resultado != null)
+                {
+                    FormCambiarContrasena formCambiar = new FormCambiarContrasena(resultado.Credencial);
+                    formCambiar.ShowDialog();
+                }
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
-
-            FormCambiarContrasena cambiar = new FormCambiarContrasena(cred);
-            cambiar.ShowDialog();
         }
     }
 }

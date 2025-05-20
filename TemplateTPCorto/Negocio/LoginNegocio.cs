@@ -22,23 +22,9 @@ namespace Negocio
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
             PerfilPersistencia perfilPersistencia = new PerfilPersistencia();
+            requiereCambio = false;
 
             Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
-          
-            requiereCambio = false;
-          
-             if (credencial != null && credencial.Contrasena.Equals(password))
-            {
-                ResetPasswordNegocio reset = new ResetPasswordNegocio();
-
-                if (reset.DebeCambiarContrasena(credencial))
-                {
-                    requiereCambio = true;
-                }
-
-                return credencial;
-            }
-
 
             if (credencial == null)
             {
@@ -66,9 +52,18 @@ namespace Negocio
 
             usuarioPersistencia.LimpiarIntentosFallidos(legajo);
 
+            // Verificar si necesita cambiar la contraseña
             if (!credencial.EsPrimerLogin)
             {
-                usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
+                ResetPasswordNegocio reset = new ResetPasswordNegocio();
+                if (reset.DebeCambiarContrasena(credencial))
+                {
+                    requiereCambio = true;
+                }
+                else
+                {
+                    usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
+                }
             }
 
             // Obtener perfil y roles
@@ -80,12 +75,14 @@ namespace Negocio
 
             List<Rol> roles = perfilPersistencia.ObtenerRolesPerfil(perfil.IdPerfil);
 
-            return new ResultadoLogin 
+            var resultado = new ResultadoLogin 
             { 
                 Credencial = credencial,
                 Perfil = perfil,
                 Roles = roles
             };
+
+            return resultado;
         }
 
         public void CambiarPasswordPrimerLogin(string legajo, string nuevaPassword)
