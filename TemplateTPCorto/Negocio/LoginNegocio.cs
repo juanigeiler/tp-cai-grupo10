@@ -10,6 +10,7 @@ namespace Negocio
 {
     public class LoginNegocio
     {
+
         public class ResultadoLogin
         {
             public Credencial Credencial { get; set; }
@@ -17,12 +18,27 @@ namespace Negocio
             public List<Rol> Roles { get; set; }
         }
 
-        public ResultadoLogin login(String usuario, String password)
+        public ResultadoLogin login(String usuario, String password, out bool requiereCambio)
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
             PerfilPersistencia perfilPersistencia = new PerfilPersistencia();
 
             Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
+          
+            requiereCambio = false;
+          
+             if (credencial != null && credencial.Contrasena.Equals(password))
+            {
+                ResetPasswordNegocio reset = new ResetPasswordNegocio();
+
+                if (reset.DebeCambiarContrasena(credencial))
+                {
+                    requiereCambio = true;
+                }
+
+                return credencial;
+            }
+
 
             if (credencial == null)
             {
@@ -75,7 +91,7 @@ namespace Negocio
         public void CambiarPasswordPrimerLogin(string legajo, string nuevaPassword)
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
-            // usuarioPersistencia.ActualizarPassword(legajo, nuevaPassword); 
+            //usuarioPersistencia.ActualizarPassword(legajo, nuevaPassword); 
             usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
         }
     }

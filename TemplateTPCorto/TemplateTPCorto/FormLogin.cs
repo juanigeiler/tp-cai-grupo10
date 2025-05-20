@@ -31,8 +31,9 @@ namespace TemplateTPCorto
                     return;
                 }
 
+                bool requiereCambio;
                 LoginNegocio loginNegocio = new LoginNegocio();
-                var resultado = loginNegocio.login(txtUsuario.Text, txtPassword.Text);
+                var resultado = loginNegocio.login(txtUsuario.Text, txtPassword.Text,out requiereCambio);
 
                 if (resultado.Credencial.EsPrimerLogin)
                 {
@@ -53,6 +54,26 @@ namespace TemplateTPCorto
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
+        }
+
+        private void btnCambiarPassword_Click(object sender, EventArgs e)
+        {
+            string usuario = txtUsuario.Text;
+            string password = txtPassword.Text;
+
+            LoginNegocio loginNegocio = new LoginNegocio();
+            bool requiereCambio;
+
+            Credencial cred = loginNegocio.login(usuario, password, out requiereCambio);
+
+            if (cred == null)
+            {
+                MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            FormCambiarContrasena cambiar = new FormCambiarContrasena(cred);
+            cambiar.ShowDialog();
         }
     }
 }
