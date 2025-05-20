@@ -10,14 +10,24 @@ namespace Negocio
 {
     public class LoginNegocio
     {
-        public Credencial login(string usuario, string password, out bool requiereCambio)
+
+        public class ResultadoLogin
+        {
+            public Credencial Credencial { get; set; }
+            public Perfil Perfil { get; set; }
+            public List<Rol> Roles { get; set; }
+        }
+
+        public ResultadoLogin login(String usuario, String password, out bool requiereCambio)
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
-            Credencial credencial = usuarioPersistencia.login(usuario);
+            PerfilPersistencia perfilPersistencia = new PerfilPersistencia();
 
+            Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
+          
             requiereCambio = false;
-
-            if (credencial != null && credencial.Contrasena.Equals(password))
+          
+             if (credencial != null && credencial.Contrasena.Equals(password))
             {
                 ResetPasswordNegocio reset = new ResetPasswordNegocio();
 
@@ -29,7 +39,60 @@ namespace Negocio
                 return credencial;
             }
 
-            return null;
+
+            if (credencial == null)
+            {
+                throw new Exception("Credenciales incorrectas.");
+            }
+
+            string legajo = credencial.Legajo;
+
+            if (usuarioPersistencia.EstaBloqueado(legajo))
+            {
+                throw new Exception("El usuario está bloqueado ya que superó el límite de intentos.");
+            }
+
+            if (credencial.Contrasena != password)
+            {
+                if (usuarioPersistencia.CantidadIntentosUsuario(legajo) >= 2)
+                {
+                    usuarioPersistencia.BloquearUsuario(legajo);
+                    throw new Exception("El usuario fue bloqueado por exceder los intentos de login.");
+                }
+
+                usuarioPersistencia.RegistrarIntentoFallido(legajo);
+                throw new Exception("Credenciales incorrectas.");
+            }
+
+            usuarioPersistencia.LimpiarIntentosFallidos(legajo);
+
+            if (!credencial.EsPrimerLogin)
+            {
+                usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
+            }
+
+            // Obtener perfil y roles
+            Perfil perfil = perfilPersistencia.ObtenerPerfilUsuario(credencial.Legajo);
+            if (perfil == null)
+            {
+                throw new Exception("El usuario no tiene un perfil asignado.");
+            }
+
+            List<Rol> roles = perfilPersistencia.ObtenerRolesPerfil(perfil.IdPerfil);
+
+            return new ResultadoLogin 
+            { 
+                Credencial = credencial,
+                Perfil = perfil,
+                Roles = roles
+            };
+        }
+
+        public void CambiarPasswordPrimerLogin(string legajo, string nuevaPassword)
+        {
+            UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
+            //usuarioPersistencia.ActualizarPassword(legajo, nuevaPassword); 
+            usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
         }
     }
 }
