@@ -35,12 +35,16 @@
             this.lblNuevaContrasena = new System.Windows.Forms.Label();
             this.txtNuevaContrasena = new System.Windows.Forms.TextBox();
             this.btnConfirmar = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.TextBoxUsuario = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.TextBoxViejaContraseña = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lblNuevaContrasena
             // 
             this.lblNuevaContrasena.AutoSize = true;
-            this.lblNuevaContrasena.Location = new System.Drawing.Point(20, 20);
+            this.lblNuevaContrasena.Location = new System.Drawing.Point(21, 133);
             this.lblNuevaContrasena.Name = "lblNuevaContrasena";
             this.lblNuevaContrasena.Size = new System.Drawing.Size(142, 20);
             this.lblNuevaContrasena.TabIndex = 0;
@@ -48,16 +52,15 @@
             // 
             // txtNuevaContrasena
             // 
-            this.txtNuevaContrasena.Location = new System.Drawing.Point(20, 40);
+            this.txtNuevaContrasena.Location = new System.Drawing.Point(23, 156);
             this.txtNuevaContrasena.Name = "txtNuevaContrasena";
             this.txtNuevaContrasena.PasswordChar = '*';
             this.txtNuevaContrasena.Size = new System.Drawing.Size(200, 26);
             this.txtNuevaContrasena.TabIndex = 1;
-            this.txtNuevaContrasena.TextChanged += new System.EventHandler(this.txtNuevaContrasena_TextChanged);
             // 
             // btnConfirmar
             // 
-            this.btnConfirmar.Location = new System.Drawing.Point(20, 70);
+            this.btnConfirmar.Location = new System.Drawing.Point(150, 233);
             this.btnConfirmar.Name = "btnConfirmar";
             this.btnConfirmar.Size = new System.Drawing.Size(200, 25);
             this.btnConfirmar.TabIndex = 2;
@@ -65,9 +68,48 @@
             this.btnConfirmar.UseVisualStyleBackColor = true;
             this.btnConfirmar.Click += new System.EventHandler(this.btnConfirmar_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(20, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(143, 20);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Ingrese su Usuario";
+            // 
+            // TextBoxUsuario
+            // 
+            this.TextBoxUsuario.Location = new System.Drawing.Point(24, 52);
+            this.TextBoxUsuario.Name = "TextBoxUsuario";
+            this.TextBoxUsuario.PasswordChar = '*';
+            this.TextBoxUsuario.Size = new System.Drawing.Size(200, 26);
+            this.TextBoxUsuario.TabIndex = 4;
+            this.TextBoxUsuario.TextChanged += new System.EventHandler(this.TextBoxUsuario_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(19, 81);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(210, 20);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Ingrese su Vieja Contraseña";
+            // 
+            // TextBoxViejaContraseña
+            // 
+            this.TextBoxViejaContraseña.Location = new System.Drawing.Point(23, 104);
+            this.TextBoxViejaContraseña.Name = "TextBoxViejaContraseña";
+            this.TextBoxViejaContraseña.PasswordChar = '*';
+            this.TextBoxViejaContraseña.Size = new System.Drawing.Size(200, 26);
+            this.TextBoxViejaContraseña.TabIndex = 6;
+            // 
             // FormCambiarContrasena
             // 
-            this.ClientSize = new System.Drawing.Size(250, 120);
+            this.ClientSize = new System.Drawing.Size(495, 298);
+            this.Controls.Add(this.TextBoxViejaContraseña);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.TextBoxUsuario);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblNuevaContrasena);
             this.Controls.Add(this.txtNuevaContrasena);
             this.Controls.Add(this.btnConfirmar);
@@ -81,5 +123,10 @@
 
 
         #endregion
+
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox TextBoxUsuario;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox TextBoxViejaContraseña;
     }
 }

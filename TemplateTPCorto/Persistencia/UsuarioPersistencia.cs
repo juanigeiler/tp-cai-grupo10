@@ -138,5 +138,24 @@ namespace Persistencia
 
             File.WriteAllLines(rutaArchivo, lineas);
         }
+
+        public void ActualizarContraseña(string usuario, string contraseña)
+        {
+            DataBaseUtils dataBaseUtils = new DataBaseUtils();
+            List<string> registros = dataBaseUtils.BuscarRegistro("credenciales.csv");
+
+            for (int i = 1; i < registros.Count; i++)
+            {
+                Credencial c = new Credencial(registros[i]);
+                if (c.NombreUsuario == usuario)
+                {
+                    c.Contrasena = contraseña;
+                    registros[i] = $"{c.Legajo};{c.NombreUsuario};{c.Contrasena};{c.FechaAlta.ToString("d/M/yyyy")};{DateTime.Now.ToString("d/M/yyyy")}";
+                    break;
+                }
+            }
+
+            dataBaseUtils.SobrescribirArchivo("credenciales.csv", registros);
+        }
     }
 }
