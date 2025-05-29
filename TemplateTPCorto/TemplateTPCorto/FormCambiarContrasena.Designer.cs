@@ -35,10 +35,10 @@
             this.lblNuevaContrasena = new System.Windows.Forms.Label();
             this.txtNuevaContrasena = new System.Windows.Forms.TextBox();
             this.btnConfirmar = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.TextBoxUsuario = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.TextBoxViejaContraseña = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.TextBoxUsuario = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lblNuevaContrasena
@@ -68,24 +68,6 @@
             this.btnConfirmar.UseVisualStyleBackColor = true;
             this.btnConfirmar.Click += new System.EventHandler(this.btnConfirmar_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(20, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(143, 20);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Ingrese su Usuario";
-            // 
-            // TextBoxUsuario
-            // 
-            this.TextBoxUsuario.Location = new System.Drawing.Point(24, 52);
-            this.TextBoxUsuario.Name = "TextBoxUsuario";
-            this.TextBoxUsuario.PasswordChar = '*';
-            this.TextBoxUsuario.Size = new System.Drawing.Size(200, 26);
-            this.TextBoxUsuario.TabIndex = 4;
-            this.TextBoxUsuario.TextChanged += new System.EventHandler(this.TextBoxUsuario_TextChanged);
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -102,6 +84,23 @@
             this.TextBoxViejaContraseña.PasswordChar = '*';
             this.TextBoxViejaContraseña.Size = new System.Drawing.Size(200, 26);
             this.TextBoxViejaContraseña.TabIndex = 6;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(20, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(143, 20);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Ingrese su Usuario";
+            // 
+            // TextBoxUsuario
+            // 
+            this.TextBoxUsuario.Location = new System.Drawing.Point(24, 52);
+            this.TextBoxUsuario.Name = "TextBoxUsuario";
+            this.TextBoxUsuario.Size = new System.Drawing.Size(200, 26);
+            this.TextBoxUsuario.TabIndex = 4;
+            this.TextBoxUsuario.TextChanged += new System.EventHandler(this.TextBoxUsuario_TextChanged);
             // 
             // FormCambiarContrasena
             // 
@@ -124,9 +123,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox TextBoxUsuario;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox TextBoxViejaContraseña;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox TextBoxUsuario;
     }
 }
