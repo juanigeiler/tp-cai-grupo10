@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using Persistencia;
+using System.Threading.Tasks;
 
 namespace TemplateTPCorto
 {
@@ -16,37 +17,74 @@ namespace TemplateTPCorto
     {
         private Credencial _credencial;
 
-        public FormCambiarContrasena(Credencial cred)
+        public FormCambiarContrasena(Credencial cred = null)
         {
             InitializeComponent();
             _credencial = cred;
+            if (_credencial != null)
+            {
+                TextBoxUsuario.Text = _credencial.NombreUsuario;
+                TextBoxUsuario.Enabled = false;
+
+            }
         }
 
         private void btnConfirmar_Click(object sender, EventArgs e)
         {
+            string usuario = TextBoxUsuario.Text;
+            string viejaContrasena = TextBoxViejaContraseña.Text;
+            string nuevaContrasena = txtNuevaContrasena.Text;
+
+            Credencial credencial = _credencial; 
+
+            
             try
             {
-                string nuevaContraseña = txtNuevaContrasena.Text;
-                bool requiereCambio;
-                LoginNegocio loginNegocio = new LoginNegocio();
-                var validacionLogin = loginNegocio.login(this.TextBoxUsuario.Text, TextBoxViejaContraseña.Text, out requiereCambio);
+              if (credencial == null)
+                {
+                    
+                    LoginNegocio loginNegocio = new LoginNegocio();
+                    var validacionLogin = loginNegocio.verificarUserCambioContraseña(usuario, viejaContrasena);
 
+                    if (validacionLogin == null)
+                    {
+                        MessageBox.Show("Usuario o contraseña actual incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }                    
+
+                    credencial = _credencial;
+                }
+
+                // Intentamos cambiar la contraseña
+                else
+                {
+                    if (credencial.Contrasena != viejaContrasena)
+                    {
+                        MessageBox.Show("Su Contraseña no coincide con la anterior");
+                        return;
+                    }
+
+                }
                 ResetPasswordNegocio reset = new ResetPasswordNegocio();
-                bool validacionNuevaContraseña = reset.CambiarContrasena(_credencial, nuevaContraseña);
+                bool cambioOk = reset.CambiarContrasena(credencial, nuevaContrasena);
 
-                if (validacionNuevaContraseña && validacionLogin != null)
+                if (cambioOk)
                 {
                     UsuarioPersistencia persistencia = new UsuarioPersistencia();
-                    persistencia.ActualizarContraseña(validacionLogin.Credencial.NombreUsuario,nuevaContraseña);
+                    persistencia.ActualizarContraseña(credencial.NombreUsuario, nuevaContrasena);
 
                     MessageBox.Show("Contraseña cambiada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.Close();
                 }
-            }catch (Exception ex)
-            {
-                MessageBox.Show("Error de Excepcion");
+                else
+                {
+                    MessageBox.Show("No se pudo cambiar la contraseña. Verificá los datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ocurrió un error inesperado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void TextBoxUsuario_TextChanged(object sender, EventArgs e)

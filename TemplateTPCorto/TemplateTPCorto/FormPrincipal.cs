@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Datos;
 using System.Collections.Generic;
 using System.Drawing;
+using Negocio;
 
 namespace TemplateTPCorto
 {
@@ -114,6 +115,23 @@ namespace TemplateTPCorto
         {
             MessageBox.Show("Funcionalidad de Autorizaciones en desarrollo");
             // Aquí irá la lógica para abrir el formulario de autorizaciones
+        }
+
+        private void btnCambiar_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+
+                FormCambiarContrasena formCambiar = new FormCambiarContrasena(_credencial);            
+                formCambiar.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                // opcional: podrías mostrar esto si querés depurar
+                MessageBox.Show($"Error No Esperado");
+            }
+
         }
     }
 }
