@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Datos.Ventas;
+using Newtonsoft.Json;
 using Persistencia.WebService.Utils;
 using System;
 using System.Collections.Generic;
@@ -28,5 +29,21 @@ namespace Persistencia
             return false;
         }
         */
+
+        public bool agregarVentas (List <ProductoVenta> listaproductos)
+        {
+            foreach(ProductoVenta productoVenta in listaproductos)
+            {
+                var jsonRequest = JsonConvert.SerializeObject(productoVenta);
+                HttpResponseMessage response = WebHelper.Post("Venta/AgregarVenta", jsonRequest);
+                if (response.IsSuccessStatusCode != true)
+                {
+                    return false;
+                }
+                
+            }
+
+            return true;
+        }
     }
 }
