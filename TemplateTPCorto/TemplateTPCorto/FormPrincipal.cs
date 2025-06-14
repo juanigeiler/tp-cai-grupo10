@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using Datos;
 using System.Collections.Generic;
 using System.Drawing;
+using Negocio;
 
 namespace TemplateTPCorto
 {
@@ -36,6 +37,7 @@ namespace TemplateTPCorto
                     break;
                 case "OPERADOR":
                     ConfigurarMenuOperador();
+                    CargarClientes();
                     break;
             }
         }
@@ -61,6 +63,24 @@ namespace TemplateTPCorto
                         buttonY += 40;
                         break;
                 }
+            }
+        }
+
+        private void CargarClientes()
+        {
+            try
+            {
+                ClienteNegocio clienteNegocio = new ClienteNegocio();
+                var listaClientes = clienteNegocio.ObtenerClientes();
+
+                comboClientes.DataSource = listaClientes;
+                comboClientes.DisplayMember = "NombreCompleto";
+                comboClientes.ValueMember = "Id";
+                comboClientes.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar clientes: " + ex.Message);
             }
         }
 
