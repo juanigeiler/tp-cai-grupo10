@@ -33,7 +33,15 @@ namespace TemplateTPCorto
 
                 bool requiereCambio;
                 LoginNegocio loginNegocio = new LoginNegocio();
-                var resultado = loginNegocio.login(txtUsuario.Text, txtPassword.Text,out requiereCambio);
+                var resultado = loginNegocio.login(txtUsuario.Text, txtPassword.Text, out requiereCambio);
+                ResetPasswordNegocio verificaLogin = new ResetPasswordNegocio();
+
+                if (verificaLogin.DebeCambiarContrasena(resultado.Credencial) == true)
+                {
+                    MessageBox.Show("Su contraseña Caduco, por favor vaya a la opción Cambiar Contraseña");
+                    return;
+
+                }
 
                 if (resultado.Credencial.EsPrimerLogin)
                 {
@@ -57,26 +65,21 @@ namespace TemplateTPCorto
         }
 
         private void btnCambiarPassword_Click(object sender, EventArgs e)
-        {     
+        {
+
             try
             {
-                string usuario = txtUsuario.Text;
-                string password = txtPassword.Text;
+                FormCambiarContrasena formCambiar = new FormCambiarContrasena();
 
-                bool requiereCambio;
-                LoginNegocio loginNegocio = new LoginNegocio();
-                var resultado = loginNegocio.login(usuario, password, out requiereCambio);
-
-                if (resultado != null)
-                {
-                    FormCambiarContrasena formCambiar = new FormCambiarContrasena(resultado.Credencial);
-                    formCambiar.ShowDialog();
-                }
+                formCambiar.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Usuario o contraseña incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // opcional: podrías mostrar esto si querés depurar
+                MessageBox.Show($"Error No Esperado");
             }
+
+            
         }
     }
 }
