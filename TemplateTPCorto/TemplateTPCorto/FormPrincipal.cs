@@ -101,20 +101,20 @@ namespace TemplateTPCorto
 
         private void BtnModificarPersona_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad de Modificar Persona en desarrollo");
-            // Aquí irá la lógica para abrir el formulario de modificación de persona
+            FormModificarPersona formModificarPersona = new FormModificarPersona();
+            formModificarPersona.ShowDialog();
         }
 
         private void BtnDesbloquearCredencial_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad de Desbloquear Credencial en desarrollo");
-            // Aquí irá la lógica para abrir el formulario de desbloqueo de credencial
+            FormDesbloquearCredencial formDesbloquear = new FormDesbloquearCredencial();
+            formDesbloquear.ShowDialog();
         }
 
         private void BtnAutorizaciones_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad de Autorizaciones en desarrollo");
-            // Aquí irá la lógica para abrir el formulario de autorizaciones
+            FormAutorizaciones formAutorizaciones = new FormAutorizaciones();
+            formAutorizaciones.ShowDialog();
         }
 
         private void btnCambiar_Click(object sender, EventArgs e)
