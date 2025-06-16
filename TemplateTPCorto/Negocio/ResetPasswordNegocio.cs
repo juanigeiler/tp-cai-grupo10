@@ -19,6 +19,12 @@ namespace Negocio
 
         public bool CambiarContrasena(Credencial credencial, string nuevaContrasena)
         {
+            if (credencial == null)
+            {
+                Console.WriteLine("Error: La credencial no puede ser nula.");
+                return false;
+            }
+
             if (nuevaContrasena == credencial.Contrasena)
             {
                 Console.WriteLine("La nueva contraseña no puede ser igual a la anterior.");

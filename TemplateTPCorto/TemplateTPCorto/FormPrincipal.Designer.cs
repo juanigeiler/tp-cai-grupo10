@@ -31,7 +31,6 @@ namespace TemplateTPCorto
             this.panelMenu = new System.Windows.Forms.Panel();
             this.lblBienvenida = new System.Windows.Forms.Label();
             this.panelContenido = new System.Windows.Forms.Panel();
-            this.btnCambiar = new System.Windows.Forms.Button();
             this.panelContenido.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,7 +43,6 @@ namespace TemplateTPCorto
             this.panelMenu.Name = "panelMenu";
             this.panelMenu.Size = new System.Drawing.Size(1500, 863);
             this.panelMenu.TabIndex = 0;
-        
             // 
             // lblBienvenida
             // 
@@ -56,31 +54,17 @@ namespace TemplateTPCorto
             this.lblBienvenida.Size = new System.Drawing.Size(297, 32);
             this.lblBienvenida.TabIndex = 1;
             this.lblBienvenida.Text = "Bienvenido al Sistema";
-       
             // 
             // panelContenido
             // 
             this.panelContenido.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelContenido.Controls.Add(this.btnCambiar);
             this.panelContenido.Location = new System.Drawing.Point(315, 62);
             this.panelContenido.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelContenido.Name = "panelContenido";
             this.panelContenido.Size = new System.Drawing.Size(1161, 783);
             this.panelContenido.TabIndex = 2;
-        
-            // 
-            // btnCambiar
-            // 
-            this.btnCambiar.Location = new System.Drawing.Point(23, 20);
-            this.btnCambiar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnCambiar.Name = "btnCambiar";
-            this.btnCambiar.Size = new System.Drawing.Size(209, 35);
-            this.btnCambiar.TabIndex = 4;
-            this.btnCambiar.Text = "Cambiar Contraseña";
-            this.btnCambiar.UseVisualStyleBackColor = true;
-            this.btnCambiar.Click += new System.EventHandler(this.btnCambiar_Click);
             // 
             // FormPrincipal
             // 
@@ -99,7 +83,6 @@ namespace TemplateTPCorto
             this.panelContenido.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -107,6 +90,5 @@ namespace TemplateTPCorto
         private System.Windows.Forms.Panel panelMenu;
         private System.Windows.Forms.Label lblBienvenida;
         private System.Windows.Forms.Panel panelContenido;
-        private System.Windows.Forms.Button btnCambiar;
     }
 }

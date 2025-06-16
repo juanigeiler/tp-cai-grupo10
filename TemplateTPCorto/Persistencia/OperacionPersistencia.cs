@@ -20,11 +20,11 @@ namespace Persistencia
             string archivo = "operaciones.csv";
             if (operacion.TipoOperacion == "CAMBIO_CREDENCIAL")
             {
-                archivo = "operaciones_cambio_credencial.csv";
+                archivo = "operacion_cambio_credencial.csv";
             }
             else if (operacion.TipoOperacion == "CAMBIO_PERSONA")
             {
-                archivo = "operaciones_cambio_persona.csv";
+                archivo = "operacion_cambio_persona.csv";
             }
 
             _dataBaseUtils.AgregarRegistro(archivo, operacion.ToString());
@@ -42,14 +42,14 @@ namespace Persistencia
             }
 
             // Obtener operaciones de cambio de credencial
-            registros = _dataBaseUtils.BuscarRegistro("operaciones_cambio_credencial.csv");
+            registros = _dataBaseUtils.BuscarRegistro("operacion_cambio_credencial.csv");
             for (int i = 1; i < registros.Count; i++)
             {
                 operaciones.Add(new Operacion(registros[i]));
             }
 
             // Obtener operaciones de cambio de persona
-            registros = _dataBaseUtils.BuscarRegistro("operaciones_cambio_persona.csv");
+            registros = _dataBaseUtils.BuscarRegistro("operacion_cambio_persona.csv");
             for (int i = 1; i < registros.Count; i++)
             {
                 operaciones.Add(new Operacion(registros[i]));
@@ -60,7 +60,7 @@ namespace Persistencia
 
         public void ActualizarEstadoOperacion(int idOperacion, string nuevoEstado)
         {
-            string[] archivos = { "operaciones.csv", "operaciones_cambio_credencial.csv", "operaciones_cambio_persona.csv" };
+            string[] archivos = { "operaciones.csv", "operacion_cambio_credencial.csv", "operacion_cambio_persona.csv" };
 
             foreach (var archivo in archivos)
             {

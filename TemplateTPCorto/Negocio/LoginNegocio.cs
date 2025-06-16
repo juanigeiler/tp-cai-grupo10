@@ -25,12 +25,14 @@ namespace Negocio
             PerfilPersistencia perfilPersistencia = new PerfilPersistencia();           
 
             Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
-            string legajo = credencial.Legajo;
 
             if (credencial == null)
             {
                 throw new Exception("Credenciales incorrectas.");
             }
+
+            string legajo = credencial.Legajo;
+
             if (credencial.Contrasena != password)
             {
                 if (usuarioPersistencia.CantidadIntentosUsuario(legajo) >= 2)
@@ -46,7 +48,6 @@ namespace Negocio
             {
                 return credencial;
             }
-
         }
 
 
