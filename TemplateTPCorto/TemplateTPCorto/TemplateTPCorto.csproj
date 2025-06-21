@@ -46,17 +46,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormAutorizaciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAutorizaciones.Designer.cs">
+      <DependentUpon>FormAutorizaciones.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormCambiarContrasena.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCambiarContrasena.Designer.cs">
       <DependentUpon>FormCambiarContrasena.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormDesbloquearCredencial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDesbloquearCredencial.Designer.cs">
+      <DependentUpon>FormDesbloquearCredencial.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormLogin.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormModificarPersona.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormModificarPersona.Designer.cs">
+      <DependentUpon>FormModificarPersona.cs</DependentUpon>
     </Compile>
     <Compile Include="FormPrimerLogin.cs">
       <SubType>Form</SubType>

@@ -18,6 +18,39 @@ namespace Negocio
             public List<Rol> Roles { get; set; }
         }
 
+
+        public Credencial verificarUserCambioContraseña(String usuario, String password)
+        {
+            UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
+            PerfilPersistencia perfilPersistencia = new PerfilPersistencia();           
+
+            Credencial credencial = usuarioPersistencia.ObtenerCredencialPorNombreUsuario(usuario);
+
+            if (credencial == null)
+            {
+                throw new Exception("Credenciales incorrectas.");
+            }
+
+            string legajo = credencial.Legajo;
+
+            if (credencial.Contrasena != password)
+            {
+                if (usuarioPersistencia.CantidadIntentosUsuario(legajo) >= 2)
+                {
+                    usuarioPersistencia.BloquearUsuario(legajo);
+                    throw new Exception("El usuario fue bloqueado por exceder los intentos de login.");
+                }
+
+                usuarioPersistencia.RegistrarIntentoFallido(legajo);
+                throw new Exception("Credenciales incorrectas.");
+            }
+            else
+            {
+                return credencial;
+            }
+        }
+
+
         public ResultadoLogin login(String usuario, String password, out bool requiereCambio)
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
