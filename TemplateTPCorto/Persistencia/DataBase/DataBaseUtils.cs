@@ -9,20 +9,31 @@ namespace Persistencia.DataBase
 {
     public class DataBaseUtils
     {
-        string archivoCsv = Path.GetFullPath(
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Persistencia\DataBase\Tablas")
-        );
+        private readonly string rutaBase;
+
+        public DataBaseUtils()
+        {
+            rutaBase = Path.GetFullPath(
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Persistencia\DataBase\Tablas")
+            );
+            Console.WriteLine($"Ruta base inicializada: {rutaBase}");
+        }
 
         public List<String> BuscarRegistro(String nombreArchivo)
         {
-            archivoCsv = Path.Combine(archivoCsv, nombreArchivo);
-
-            String rutaArchivo = Path.GetFullPath(archivoCsv); // Normaliza la ruta
+            String rutaArchivo = Path.Combine(rutaBase, nombreArchivo);
+            Console.WriteLine($"Buscando archivo: {rutaArchivo}");
 
             List<String> listado = new List<String>();
 
             try
             {
+                if (!File.Exists(rutaArchivo))
+                {
+                    Console.WriteLine($"El archivo no existe: {rutaArchivo}");
+                    return listado;
+                }
+
                 using (StreamReader sr = new StreamReader(rutaArchivo))
                 {
                     string linea;
@@ -31,6 +42,8 @@ namespace Persistencia.DataBase
                         listado.Add(linea);
                     }
                 }
+
+                Console.WriteLine($"Líneas leídas: {listado.Count}");
             }
             catch (Exception e)
             {
@@ -43,55 +56,44 @@ namespace Persistencia.DataBase
         // Método para borrar un registro
         public void BorrarRegistro(string id, String nombreArchivo)
         {
-            archivoCsv = Path.Combine(archivoCsv, nombreArchivo);
-
-            String rutaArchivo = Path.GetFullPath(archivoCsv); // Normaliza la ruta
+            String rutaArchivo = Path.Combine(rutaBase, nombreArchivo);
+            Console.WriteLine($"Intentando borrar registro en: {rutaArchivo}");
 
             try
             {
-                // Verificar si el archivo existe
                 if (!File.Exists(rutaArchivo))
                 {
-                    Console.WriteLine("El archivo no existe: " + archivoCsv);
+                    Console.WriteLine($"El archivo no existe: {rutaArchivo}");
                     return;
                 }
 
-                // Leer el archivo y obtener las líneas
                 List<string> listado = BuscarRegistro(nombreArchivo);
-
-                // Filtrar las líneas que no coinciden con el ID a borrar (comparar solo la primera columna)
                 var registrosRestantes = listado.Where(linea =>
                 {
                     var campos = linea.Split(';');
-                    return campos[0] != id; // Verifica solo el ID (primera columna)
+                    return campos[0] != id;
                 }).ToList();
 
-                // Sobrescribir el archivo con las líneas restantes
-                File.WriteAllLines(archivoCsv, registrosRestantes);
-
-                Console.WriteLine($"Registro con ID {id} borrado correctamente.");
+                File.WriteAllLines(rutaArchivo, registrosRestantes);
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error al intentar borrar el registro:");
-                Console.WriteLine($"Mensaje: {e.Message}");
-                Console.WriteLine($"Pila de errores: {e.StackTrace}");
+                Console.WriteLine(e.Message);
             }
         }
 
         // Método para agregar un registro
         public void AgregarRegistro(string nombreArchivo, string nuevoRegistro)
         {
-            archivoCsv = Path.Combine(archivoCsv, nombreArchivo);
-
-            String rutaArchivo = Path.GetFullPath(archivoCsv);
+            String rutaArchivo = Path.Combine(rutaBase, nombreArchivo);
+            Console.WriteLine($"Intentando agregar registro en: {rutaArchivo}");
 
             try
             {
-                // Verificar si el archivo existe
-                if (!File.Exists(archivoCsv))
+                if (!File.Exists(rutaArchivo))
                 {
-                    Console.WriteLine("El archivo no existe: " + archivoCsv);
+                    Console.WriteLine($"El archivo no existe: {rutaArchivo}");
                     return;
                 }
 
@@ -106,37 +108,36 @@ namespace Persistencia.DataBase
                     }
                 }
 
-                // Abrir el archivo y agregar el nuevo registro
-                using (StreamWriter sw = new StreamWriter(archivoCsv, append: true))
+                using (StreamWriter sw = new StreamWriter(rutaArchivo, append: true))
                 {
-                    if (!saltoDeLinea) {
+                    if (!saltoDeLinea)
+                    {
                         sw.WriteLine();
                     }
-
-                    sw.WriteLine(nuevoRegistro); // Agregar la nueva línea
+                    sw.WriteLine(nuevoRegistro);
                 }
-
-                Console.WriteLine("Registro agregado correctamente.");
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error al intentar agregar el registro:");
-                Console.WriteLine($"Mensaje: {e.Message}");
-                Console.WriteLine($"Pila de errores: {e.StackTrace}");
+                Console.WriteLine(e.Message);
             }
         }
 
         public void SobrescribirArchivo(string nombreArchivo, List<string> contenido)
         {
-            string ruta = Path.Combine(archivoCsv, nombreArchivo);
-            using (StreamWriter sw = new StreamWriter(ruta, false))
+            String rutaArchivo = Path.Combine(rutaBase, nombreArchivo);
+            Console.WriteLine($"Intentando sobrescribir archivo: {rutaArchivo}");
+
+            try
             {
-                foreach (var linea in contenido)
-                {
-                    sw.WriteLine(linea);
-                }
+                File.WriteAllLines(rutaArchivo, contenido);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error al intentar sobrescribir el archivo:");
+                Console.WriteLine(e.Message);
             }
         }
-
     }
 }
