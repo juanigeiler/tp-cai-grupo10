@@ -63,11 +63,15 @@ namespace TemplateTPCorto
                         break;
                 }
             }
+
+            // Agregar botón de cambiar contraseña para supervisor
+            AgregarBoton("Cambiar Contraseña", buttonY, BtnCambiarContrasena_Click);
         }
 
         private void ConfigurarMenuAdministrador()
         {
             AgregarBoton("Autorizaciones", 20, BtnAutorizaciones_Click);
+            AgregarBoton("Cambiar Contraseña", 60, BtnCambiarContrasena_Click);
         }
 
         private void ConfigurarMenuOperador()
@@ -80,6 +84,7 @@ namespace TemplateTPCorto
                 Font = new Font(this.Font.FontFamily, 12, FontStyle.Bold)
             };
             panelMenu.Controls.Add(lblOperador);
+            AgregarBoton("Cambiar Contraseña", 60, BtnCambiarContrasena_Click);
         }
 
         private void AgregarBoton(string texto, int posicionY, EventHandler clickHandler)
@@ -101,37 +106,33 @@ namespace TemplateTPCorto
 
         private void BtnModificarPersona_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad de Modificar Persona en desarrollo");
-            // Aquí irá la lógica para abrir el formulario de modificación de persona
+            FormModificarPersona formModificarPersona = new FormModificarPersona();
+            formModificarPersona.ShowDialog();
         }
 
         private void BtnDesbloquearCredencial_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad de Desbloquear Credencial en desarrollo");
-            // Aquí irá la lógica para abrir el formulario de desbloqueo de credencial
+            FormDesbloquearCredencial formDesbloquear = new FormDesbloquearCredencial();
+            formDesbloquear.ShowDialog();
         }
 
         private void BtnAutorizaciones_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Funcionalidad de Autorizaciones en desarrollo");
-            // Aquí irá la lógica para abrir el formulario de autorizaciones
+            FormAutorizaciones formAutorizaciones = new FormAutorizaciones();
+            formAutorizaciones.ShowDialog();
         }
 
-        private void btnCambiar_Click(object sender, EventArgs e)
+        private void BtnCambiarContrasena_Click(object sender, EventArgs e)
         {
-
             try
             {
-
                 FormCambiarContrasena formCambiar = new FormCambiarContrasena(_credencial);            
                 formCambiar.ShowDialog();
             }
             catch (Exception ex)
             {
-                // opcional: podrías mostrar esto si querés depurar
-                MessageBox.Show($"Error No Esperado");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
     }
 }

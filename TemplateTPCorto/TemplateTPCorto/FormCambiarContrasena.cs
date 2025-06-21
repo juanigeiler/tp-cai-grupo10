@@ -35,36 +35,27 @@ namespace TemplateTPCorto
             string viejaContrasena = TextBoxViejaContraseña.Text;
             string nuevaContrasena = txtNuevaContrasena.Text;
 
-            Credencial credencial = _credencial; 
-
-            
             try
             {
-              if (credencial == null)
+                Credencial credencial = _credencial;
+                
+                if (credencial == null)
                 {
-                    
                     LoginNegocio loginNegocio = new LoginNegocio();
-                    var validacionLogin = loginNegocio.verificarUserCambioContraseña(usuario, viejaContrasena);
+                    credencial = loginNegocio.verificarUserCambioContraseña(usuario, viejaContrasena);
 
-                    if (validacionLogin == null)
+                    if (credencial == null)
                     {
                         MessageBox.Show("Usuario o contraseña actual incorrectos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
-                    }                    
-
-                    credencial = _credencial;
-                }
-
-                // Intentamos cambiar la contraseña
-                else
-                {
-                    if (credencial.Contrasena != viejaContrasena)
-                    {
-                        MessageBox.Show("Su Contraseña no coincide con la anterior");
-                        return;
                     }
-
                 }
+                else if (credencial.Contrasena != viejaContrasena)
+                {
+                    MessageBox.Show("Su Contraseña no coincide con la anterior", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 ResetPasswordNegocio reset = new ResetPasswordNegocio();
                 bool cambioOk = reset.CambiarContrasena(credencial, nuevaContrasena);
 
@@ -83,7 +74,7 @@ namespace TemplateTPCorto
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ocurrió un error inesperado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
