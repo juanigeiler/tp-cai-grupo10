@@ -11,6 +11,15 @@ namespace Negocio
 {
     public class VentasNegocio
     {
+        private ProductoNegocio productoNegocio;
+        private VentaPersistencia ventaPersistencia;
+
+        public VentasNegocio()
+        {
+            productoNegocio = new ProductoNegocio();
+            ventaPersistencia = new VentaPersistencia();
+        }
+
         public List<Cliente> obtenerClientes()
         {
             List<Cliente> clientes = new List<Cliente>();
@@ -44,5 +53,19 @@ namespace Negocio
             return categoriaProductos;
         }
 
+        public List<Producto> obtenerProductosPorCategoria(String categoria)
+        {
+            return productoNegocio.obtenerProductosPorCategoria(categoria);
+        }
+
+        public List<Producto> obtenerProductosPorCategorias(List<string> categorias)
+        {
+            return productoNegocio.obtenerProductosPorCategorias(categorias);
+        }
+
+        public List<ProductoVenta> generarListaProductosVenta(List<Tuple<Guid, int>> productosYCantidades, Guid idCliente, Guid idUsuario)
+        {
+            return productoNegocio.generarListaProductosVenta(productosYCantidades, idCliente, idUsuario);
+        }
     }
 }

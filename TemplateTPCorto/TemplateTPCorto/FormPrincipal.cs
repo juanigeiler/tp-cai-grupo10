@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Datos;
+using Datos.Ventas;
 using System.Collections.Generic;
 using System.Drawing;
 using Negocio;
@@ -73,8 +74,8 @@ namespace TemplateTPCorto
         {
             try
             {
-                ClienteNegocio clienteNegocio = new ClienteNegocio();
-                var listaClientes = clienteNegocio.ObtenerClientes();
+                VentasNegocio ventasNegocio = new VentasNegocio();
+                var listaClientes = ventasNegocio.obtenerClientes();
 
                 comboClientes.DataSource = listaClientes;
                 comboClientes.DisplayMember = "NombreCompleto";
@@ -103,7 +104,8 @@ namespace TemplateTPCorto
                 Font = new Font(this.Font.FontFamily, 12, FontStyle.Bold)
             };
             panelMenu.Controls.Add(lblOperador);
-            AgregarBoton("Cambiar Contraseña", 60, BtnCambiarContrasena_Click);
+            AgregarBoton("Cargar Venta", 60, BtnCargarVenta_Click);
+            AgregarBoton("Cambiar Contraseña", 100, BtnCambiarContrasena_Click);
         }
 
         private void AgregarBoton(string texto, int posicionY, EventHandler clickHandler)
@@ -139,6 +141,20 @@ namespace TemplateTPCorto
         {
             FormAutorizaciones formAutorizaciones = new FormAutorizaciones();
             formAutorizaciones.ShowDialog();
+        }
+
+        private void BtnCargarVenta_Click(object sender, EventArgs e)
+        {
+            if (comboClientes.SelectedItem == null)
+            {
+                MessageBox.Show("Por favor, seleccione un cliente para iniciar la venta.", "Cliente no seleccionado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Cliente clienteSeleccionado = (Cliente)comboClientes.SelectedItem;
+
+            FormCargarVenta formCargarVenta = new FormCargarVenta(clienteSeleccionado);
+            formCargarVenta.ShowDialog();
         }
 
         private void BtnCambiarContrasena_Click(object sender, EventArgs e)

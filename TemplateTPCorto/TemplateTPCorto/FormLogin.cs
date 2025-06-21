@@ -17,7 +17,7 @@ namespace TemplateTPCorto
         public FormLogin()
         {
             InitializeComponent();
-            // Asegurarse de que el campo de contraseña oculte los caracteres
+            // para de que el campo de contraseña oculte los caracteres
             txtPassword.PasswordChar = '*';
         }
 
@@ -75,7 +75,6 @@ namespace TemplateTPCorto
             }
             catch (Exception ex)
             {
-                // opcional: podrías mostrar esto si querés depurar
                 MessageBox.Show($"Error No Esperado");
             }
 
