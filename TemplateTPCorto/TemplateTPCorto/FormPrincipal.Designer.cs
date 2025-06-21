@@ -31,6 +31,7 @@ namespace TemplateTPCorto
             this.panelMenu = new System.Windows.Forms.Panel();
             this.lblBienvenida = new System.Windows.Forms.Label();
             this.panelContenido = new System.Windows.Forms.Panel();
+            this.comboClientes = new System.Windows.Forms.ComboBox();
             this.panelContenido.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,7 +52,7 @@ namespace TemplateTPCorto
             this.lblBienvenida.Location = new System.Drawing.Point(309, 14);
             this.lblBienvenida.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblBienvenida.Name = "lblBienvenida";
-            this.lblBienvenida.Size = new System.Drawing.Size(297, 32);
+            this.lblBienvenida.Size = new System.Drawing.Size(195, 24);
             this.lblBienvenida.TabIndex = 1;
             this.lblBienvenida.Text = "Bienvenido al Sistema";
             // 
@@ -60,11 +61,19 @@ namespace TemplateTPCorto
             this.panelContenido.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelContenido.Location = new System.Drawing.Point(315, 62);
-            this.panelContenido.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panelContenido.Controls.Add(this.comboClientes);
+            this.panelContenido.Location = new System.Drawing.Point(210, 40);
             this.panelContenido.Name = "panelContenido";
             this.panelContenido.Size = new System.Drawing.Size(1161, 783);
             this.panelContenido.TabIndex = 2;
+            // 
+            // comboClientes
+            // 
+            this.comboClientes.FormattingEnabled = true;
+            this.comboClientes.Location = new System.Drawing.Point(95, 68);
+            this.comboClientes.Name = "comboClientes";
+            this.comboClientes.Size = new System.Drawing.Size(270, 21);
+            this.comboClientes.TabIndex = 0;
             // 
             // FormPrincipal
             // 
@@ -83,6 +92,7 @@ namespace TemplateTPCorto
             this.panelContenido.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -90,5 +100,6 @@ namespace TemplateTPCorto
         private System.Windows.Forms.Panel panelMenu;
         private System.Windows.Forms.Label lblBienvenida;
         private System.Windows.Forms.Panel panelContenido;
+        private System.Windows.Forms.ComboBox comboClientes;
     }
 }

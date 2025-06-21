@@ -37,6 +37,7 @@ namespace TemplateTPCorto
                     break;
                 case "OPERADOR":
                     ConfigurarMenuOperador();
+                    CargarClientes();
                     break;
             }
         }
@@ -66,6 +67,24 @@ namespace TemplateTPCorto
 
             // Agregar botón de cambiar contraseña para supervisor
             AgregarBoton("Cambiar Contraseña", buttonY, BtnCambiarContrasena_Click);
+        }
+
+        private void CargarClientes()
+        {
+            try
+            {
+                ClienteNegocio clienteNegocio = new ClienteNegocio();
+                var listaClientes = clienteNegocio.ObtenerClientes();
+
+                comboClientes.DataSource = listaClientes;
+                comboClientes.DisplayMember = "NombreCompleto";
+                comboClientes.ValueMember = "Id";
+                comboClientes.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar clientes: " + ex.Message);
+            }
         }
 
         private void ConfigurarMenuAdministrador()
