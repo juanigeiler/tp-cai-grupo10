@@ -147,9 +147,22 @@ namespace TemplateTPCorto
             gridCarrito.DataSource = _productosEnCarrito;
             gridCarrito.Refresh();
 
-            //TODO calcular subtotal
+            CalcularTotales();
             numericCantidad.Value = 1;
         }
 
+        private void CalcularTotales()
+        {
+            decimal subtotal = _productosEnCarrito.Sum(p => p.Precio * p.Stock); // Stock es la cantidad
+            decimal descuento = _ventasNegocio.CalcularDescuento(subtotal);
+            decimal totalFinal = subtotal - descuento;
+
+            lblSubtotal.Text = $"Subtotal: ${subtotal:N2}";
+            lblDescuento.Text = $"Descuento: -${descuento:N2}";
+            lblTotal.Text = $"Total: ${totalFinal:N2}";
+        }
+
+
+        
     }
 } 

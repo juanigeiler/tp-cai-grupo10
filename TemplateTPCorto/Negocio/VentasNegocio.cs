@@ -67,5 +67,17 @@ namespace Negocio
         {
             return productoNegocio.generarListaProductosVenta(productosYCantidades, idCliente, idUsuario);
         }
+
+        public decimal CalcularDescuento(decimal subtotal)
+        {
+            decimal descuento = 0;
+            // Promo Electro Hogar: 15% de descuento si la venta es mayor a $1,000,000
+            if (subtotal > 1000000)
+            {
+                descuento = subtotal * 0.15m;
+            }
+            return descuento;
+        }
+
     }
 }

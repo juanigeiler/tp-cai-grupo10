@@ -29,6 +29,8 @@ namespace TemplateTPCorto
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.lblSubtotal = new System.Windows.Forms.Label();
+            this.lblDescuento = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gridProductos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridCarrito)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericCantidad)).BeginInit();
@@ -112,7 +114,7 @@ namespace TemplateTPCorto
             // lblTotal
             // 
             this.lblTotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotal.Location = new System.Drawing.Point(440, 390);
+            this.lblTotal.Location = new System.Drawing.Point(440, 414);
             this.lblTotal.Name = "lblTotal";
             this.lblTotal.Size = new System.Drawing.Size(350, 24);
             this.lblTotal.TabIndex = 7;
@@ -158,11 +160,34 @@ namespace TemplateTPCorto
             this.label3.TabIndex = 11;
             this.label3.Text = "Cantidad:";
             // 
+            // lblSubtotal
+            // 
+            this.lblSubtotal.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSubtotal.Location = new System.Drawing.Point(443, 365);
+            this.lblSubtotal.Name = "lblSubtotal";
+            this.lblSubtotal.Size = new System.Drawing.Size(347, 20);
+            this.lblSubtotal.TabIndex = 12;
+            this.lblSubtotal.Text = "Subtotal: $0.00";
+            this.lblSubtotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblDescuento
+            // 
+            this.lblDescuento.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescuento.ForeColor = System.Drawing.Color.Green;
+            this.lblDescuento.Location = new System.Drawing.Point(443, 389);
+            this.lblDescuento.Name = "lblDescuento";
+            this.lblDescuento.Size = new System.Drawing.Size(347, 20);
+            this.lblDescuento.TabIndex = 13;
+            this.lblDescuento.Text = "Descuento: $0.00";
+            this.lblDescuento.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormCargarVenta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(804, 481);
+            this.Controls.Add(this.lblDescuento);
+            this.Controls.Add(this.lblSubtotal);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -203,5 +228,7 @@ namespace TemplateTPCorto
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblSubtotal;
+        private System.Windows.Forms.Label lblDescuento;
     }
-} 
+}
