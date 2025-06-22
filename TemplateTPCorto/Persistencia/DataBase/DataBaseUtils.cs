@@ -19,6 +19,11 @@ namespace Persistencia.DataBase
             Console.WriteLine($"Ruta base inicializada: {rutaBase}");
         }
 
+        public string ObtenerRuta(string nombreArchivo)
+        {
+            return Path.Combine(rutaBase, nombreArchivo);
+        }
+
         public List<String> BuscarRegistro(String nombreArchivo)
         {
             String rutaArchivo = Path.Combine(rutaBase, nombreArchivo);
@@ -53,7 +58,6 @@ namespace Persistencia.DataBase
             return listado;
         }
 
-        // Método para borrar un registro
         public void BorrarRegistro(string id, String nombreArchivo)
         {
             String rutaArchivo = Path.Combine(rutaBase, nombreArchivo);
@@ -83,7 +87,6 @@ namespace Persistencia.DataBase
             }
         }
 
-        // Método para agregar un registro
         public void AgregarRegistro(string nombreArchivo, string nuevoRegistro)
         {
             String rutaArchivo = Path.Combine(rutaBase, nombreArchivo);
@@ -93,18 +96,18 @@ namespace Persistencia.DataBase
             {
                 if (!File.Exists(rutaArchivo))
                 {
-                    Console.WriteLine($"El archivo no existe: {rutaArchivo}");
+                    Console.WriteLine($"El archivo no existe, no se puede agregar registro: {rutaArchivo}");
                     return;
                 }
 
                 bool saltoDeLinea = false;
-                using (FileStream fs = new FileStream(rutaArchivo, FileMode.Open, FileAccess.Read))
+                if (new FileInfo(rutaArchivo).Length > 0)
                 {
-                    if (fs.Length > 0)
+                    using (FileStream fs = new FileStream(rutaArchivo, FileMode.Open, FileAccess.Read))
                     {
                         fs.Seek(-1, SeekOrigin.End);
                         int lastByte = fs.ReadByte();
-                        saltoDeLinea = lastByte == '\n';
+                        saltoDeLinea = lastByte == '\n' || lastByte == '\r';
                     }
                 }
 

@@ -81,13 +81,6 @@ namespace Negocio
 
         public bool procesarVenta(List<ProductoVenta> productosVenta)
         {
-            // Validar stock antes de procesar la venta
-            if (!productoNegocio.validarStockListaProductos(productosVenta))
-            {
-                return false;
-            }
-
-            // Procesar la venta
             return ventaPersistencia.agregarVentas(productosVenta);
         }
 
@@ -95,10 +88,7 @@ namespace Negocio
         {
             try
             {
-                // El idUsuario se obtendrá de la capa de persistencia o de una fuente central.
-                List<ProductoVenta> productosVenta = generarListaProductosVenta(productosYCantidades, idCliente, Guid.Empty); // Guid.Empty como placeholder
-
-                // Procesar la venta
+                List<ProductoVenta> productosVenta = generarListaProductosVenta(productosYCantidades, idCliente, Guid.Empty);
                 return procesarVenta(productosVenta);
             }
             catch (Exception ex)

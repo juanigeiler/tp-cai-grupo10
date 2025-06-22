@@ -46,7 +46,7 @@ namespace TemplateTPCorto
                     operacion.Legajo,
                     operacion.TipoOperacion,
                     operacion.Descripcion,
-                    operacion.Fecha.ToString("d/M/yyyy"),
+                    operacion.Fecha,
                     operacion.Estado
                 );
             }
@@ -73,7 +73,7 @@ namespace TemplateTPCorto
                         operacion.Legajo,
                         operacion.TipoOperacion,
                         operacion.Descripcion,
-                        operacion.Fecha.ToString("d/M/yyyy"),
+                        operacion.Fecha,
                         operacion.Estado
                     );
                 }
@@ -86,45 +86,74 @@ namespace TemplateTPCorto
 
         private void btnAutorizar_Click(object sender, EventArgs e)
         {
+            ProcesarOperacion(true);
+        }
+
+        private void btnRechazar_Click(object sender, EventArgs e)
+        {
+            ProcesarOperacion(false);
+        }
+
+        private void ProcesarOperacion(bool autorizar)
+        {
             try
             {
                 if (dgvAutorizaciones.SelectedRows.Count == 0)
                 {
-                    MessageBox.Show("Por favor seleccione una operación para autorizar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Por favor seleccione una operación para procesar.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(txtMotivo.Text))
+                {
+                    MessageBox.Show("Por favor ingrese un motivo para la operación.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 var operacionSeleccionada = dgvAutorizaciones.SelectedRows[0];
                 int idOperacion = Convert.ToInt32(operacionSeleccionada.Cells["IdOperacion"].Value);
-                string tipoOperacion = operacionSeleccionada.Cells["TipoOperacion"].Value.ToString();
-                string legajo = operacionSeleccionada.Cells["Legajo"].Value.ToString();
+                string tipoOperacionCompleto = operacionSeleccionada.Cells["TipoOperacion"].Value.ToString();
+                string motivo = txtMotivo.Text;
+                string estado = autorizar ? "AUTORIZADO" : "RECHAZADO";
 
-                if (string.IsNullOrEmpty(txtMotivo.Text))
+                string tipoOperacionSimple = "";
+                string mensajeExito = "";
+
+                if (tipoOperacionCompleto == "CAMBIO_CREDENCIAL")
                 {
-                    MessageBox.Show("Por favor ingrese un motivo para la autorización.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    tipoOperacionSimple = "credencial";
+                    _operacionPersistencia.ProcesarCambioCredencial(idOperacion, autorizar);
+                    mensajeExito = $"Operación de cambio de credencial ha sido procesada como {estado.ToLower()}.";
+                }
+                else if (tipoOperacionCompleto == "CAMBIO_PERSONA")
+                {
+                    tipoOperacionSimple = "persona";
+                    if (autorizar)
+                    {
+                        _operacionPersistencia.AutorizarCambioPersona(idOperacion);
+                    }
+                    else
+                    {
+                        _operacionPersistencia.RechazarCambioPersona(idOperacion);
+                    }
+                    mensajeExito = $"Solicitud de cambio de persona ha sido {estado.ToLower()}.";
+                }
+                else
+                {
+                    MessageBox.Show("Tipo de operación no reconocido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Actualizar estado de la operación
-                _operacionPersistencia.ActualizarEstadoOperacion(idOperacion, "AUTORIZADO");
+                _operacionPersistencia.RegistrarAutorizacion(idOperacion, tipoOperacionSimple, motivo, estado);
 
-                // Ejecutar la operación según su tipo
-                if (tipoOperacion == "CAMBIO_CREDENCIAL")
-                {
-                    // TODO: Implementar lógica de cambio de credencial
-                    // La contraseña debe registrarse con fecha último login vacía
-                }
-                else if (tipoOperacion == "CAMBIO_PERSONA")
-                {
-                    // TODO: Implementar lógica de cambio de persona
-                }
+                MessageBox.Show(mensajeExito, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                MessageBox.Show("Operación autorizada y ejecutada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 CargarOperaciones();
+                txtMotivo.Clear();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error al procesar la operación: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
