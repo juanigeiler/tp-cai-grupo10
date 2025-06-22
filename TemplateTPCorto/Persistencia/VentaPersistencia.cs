@@ -30,20 +30,57 @@ namespace Persistencia
         }
         */
 
-        public bool agregarVentas (List <ProductoVenta> listaproductos)
+        public bool agregarVentas(List<ProductoVenta> listaproductos)
         {
-            foreach(ProductoVenta productoVenta in listaproductos)
+            if (listaproductos == null || listaproductos.Count == 0)
             {
-                var jsonRequest = JsonConvert.SerializeObject(productoVenta);
-                HttpResponseMessage response = WebHelper.Post("Venta/AgregarVenta", jsonRequest);
-                if (response.IsSuccessStatusCode != true)
-                {
-                    return false;
-                }
-                
+                return false;
             }
 
-            return true;
+            try
+            {
+                foreach (ProductoVenta productoVenta in listaproductos)
+                {
+                    // Asignar el idUsuario estático antes de enviar la solicitud
+                    productoVenta.IdUsuario = this.idUsuario;
+
+                    var jsonRequest = JsonConvert.SerializeObject(productoVenta);
+                    HttpResponseMessage response = WebHelper.Post("/api/Venta/AgregarVenta", jsonRequest);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        // Log del error específico
+                        Console.WriteLine($"Error al agregar venta para producto {productoVenta.IdProducto}: {response.StatusCode}");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al procesar las ventas: " + ex.Message);
+                return false;
+            }
+        }
+
+        public bool agregarVentaIndividual(ProductoVenta productoVenta)
+        {
+            try
+            {
+                // Asignar el idUsuario estático antes de enviar la solicitud
+                productoVenta.IdUsuario = this.idUsuario;
+
+                var jsonRequest = JsonConvert.SerializeObject(productoVenta);
+                HttpResponseMessage response = WebHelper.Post("/api/Venta/AgregarVenta", jsonRequest);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al agregar venta individual: " + ex.Message);
+                return false;
+            }
         }
     }
 }

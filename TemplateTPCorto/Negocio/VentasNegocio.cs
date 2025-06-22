@@ -79,5 +79,34 @@ namespace Negocio
             return descuento;
         }
 
+        public bool procesarVenta(List<ProductoVenta> productosVenta)
+        {
+            // Validar stock antes de procesar la venta
+            if (!productoNegocio.validarStockListaProductos(productosVenta))
+            {
+                return false;
+            }
+
+            // Procesar la venta
+            return ventaPersistencia.agregarVentas(productosVenta);
+        }
+
+        public bool procesarVentaCompleta(List<Tuple<Guid, int>> productosYCantidades, Guid idCliente)
+        {
+            try
+            {
+                // El idUsuario se obtendrá de la capa de persistencia o de una fuente central.
+                List<ProductoVenta> productosVenta = generarListaProductosVenta(productosYCantidades, idCliente, Guid.Empty); // Guid.Empty como placeholder
+
+                // Procesar la venta
+                return procesarVenta(productosVenta);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al procesar venta completa: " + ex.Message);
+                return false;
+            }
+        }
+
     }
 }
