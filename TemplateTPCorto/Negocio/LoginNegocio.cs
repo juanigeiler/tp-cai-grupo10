@@ -121,7 +121,7 @@ namespace Negocio
         public void CambiarPasswordPrimerLogin(string legajo, string nuevaPassword)
         {
             UsuarioPersistencia usuarioPersistencia = new UsuarioPersistencia();
-            usuarioPersistencia.ActualizarPassword(legajo, nuevaPassword); 
+            usuarioPersistencia.ActualizarContraseña(legajo, nuevaPassword); 
             usuarioPersistencia.ActualizarFechaUltimoLogin(legajo, DateTime.Now);
         }
     }
