@@ -162,7 +162,36 @@ namespace TemplateTPCorto
             lblTotal.Text = $"Total: ${totalFinal:N2}";
         }
 
+        private void btnConfirmarVenta_Click(object sender, EventArgs e)
+        {
+            if (_productosEnCarrito.Count == 0)
+            {
+                MessageBox.Show("El carrito está vacío.", "Carrito Vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-        
+            try
+            {
+                var productosVenta = _productosEnCarrito.Select(p =>
+                    new Tuple<Guid, int>(p.Id, p.Stock) // Stock es la cantidad
+                ).ToList();
+
+                bool ventaExitosa = _ventasNegocio.procesarVentaCompleta(productosVenta, _cliente.Id);
+
+                if (ventaExitosa)
+                {
+                    MessageBox.Show("Venta realizada con éxito.", "Venta Exitosa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo procesar la venta. Verifique el stock e intente nuevamente.", "Error en Venta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 } 
