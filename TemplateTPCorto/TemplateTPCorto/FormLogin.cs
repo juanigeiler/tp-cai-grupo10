@@ -66,7 +66,6 @@ namespace TemplateTPCorto
 
         private void btnCambiarPassword_Click(object sender, EventArgs e)
         {
-
             try
             {
                 FormCambiarContrasena formCambiar = new FormCambiarContrasena();

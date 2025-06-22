@@ -59,9 +59,14 @@ namespace TemplateTPCorto
                     return;
                 }
 
-                // Registrar la operación
-                string registroOperacion = $"{DateTime.Now.Millisecond};{_legajoActual};CAMBIO_CREDENCIAL;Desbloqueo de credencial y cambio de contraseña;{DateTime.Now.ToString("d/M/yyyy")};PENDIENTE";
-                var operacion = new Operacion(registroOperacion);
+                var operacion = new Operacion
+                {
+                    IdOperacion = _operacionPersistencia.ObtenerSiguienteId(),
+                    Legajo = _legajoActual,
+                    TipoOperacion = "CAMBIO_CREDENCIAL",
+                    Descripcion = "Solicitud de desbloqueo de credencial",
+                    Fecha = DateTime.Now.ToString("dd/MM/yyyy")
+                };
 
                 _operacionPersistencia.RegistrarOperacion(operacion);
                 MessageBox.Show("La solicitud de desbloqueo ha sido registrada y está pendiente de autorización.", 

@@ -14,14 +14,13 @@ namespace TemplateTPCorto
         private string _legajoActual;
         private string _nombreActual;
         private string _apellidoActual;
+        private string _dniActual;
 
         public FormModificarPersona()
         {
             InitializeComponent();
             _usuarioPersistencia = new UsuarioPersistencia();
             _operacionPersistencia = new OperacionPersistencia();
-            txtNombre.Enabled = false;
-            txtApellido.Enabled = false;
             btnGuardar.Enabled = false;
         }
 
@@ -54,12 +53,13 @@ namespace TemplateTPCorto
                         _legajoActual = datos[0];
                         _nombreActual = datos[1];
                         _apellidoActual = datos[2];
+                        _dniActual = datos[3];
                         
                         txtNombre.Text = _nombreActual;
                         txtApellido.Text = _apellidoActual;
+                        txtDni.Text = _dniActual;
                         
-                        txtNombre.Enabled = true;
-                        txtApellido.Enabled = true;
+                        panelDatos.Enabled = true;
                         btnGuardar.Enabled = true;
                         
                         personaEncontrada = true;
@@ -72,8 +72,8 @@ namespace TemplateTPCorto
                     MessageBox.Show("No se encontró ninguna persona con ese legajo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtNombre.Text = "";
                     txtApellido.Text = "";
-                    txtNombre.Enabled = false;
-                    txtApellido.Enabled = false;
+                    txtDni.Text = "";
+                    panelDatos.Enabled = false;
                     btnGuardar.Enabled = false;
                 }
             }
@@ -87,68 +87,45 @@ namespace TemplateTPCorto
         {
             try
             {
-                if (string.IsNullOrEmpty(txtNombre.Text) || string.IsNullOrEmpty(txtApellido.Text))
+                if (string.IsNullOrEmpty(txtNombre.Text) || string.IsNullOrEmpty(txtApellido.Text) || string.IsNullOrEmpty(txtDni.Text))
                 {
                     MessageBox.Show("Por favor complete todos los campos obligatorios.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // Leer el archivo de operaciones para calcular el próximo idOperacion
-                string rutaOperacion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Persistencia\DataBase\Tablas\operacion_cambio_persona.csv");
-                int nuevoId = 1;
-                if (File.Exists(rutaOperacion))
-                {
-                    var lineas = File.ReadAllLines(rutaOperacion);
-                    for (int i = 1; i < lineas.Length; i++)
-                    {
-                        var campos = lineas[i].Split(';');
-                        if (int.TryParse(campos[0], out int id))
-                        {
-                            if (id >= nuevoId) nuevoId = id + 1;
-                        }
-                    }
-                }
-
-                // Buscar los datos actuales de la persona para dni y fecha_ingreso
+                // 1. Obtener FechaIngreso actual de la persona
                 string rutaPersona = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Persistencia\DataBase\Tablas\persona.csv");
-                string dni = "";
                 string fechaIngreso = "";
                 if (File.Exists(rutaPersona))
                 {
                     var lineas = File.ReadAllLines(rutaPersona);
-                    for (int i = 1; i < lineas.Length; i++)
+                    var personaLine = lineas.FirstOrDefault(line => line.Split(';')[0] == _legajoActual);
+                    if (personaLine != null)
                     {
-                        var campos = lineas[i].Split(';');
-                        if (campos[0] == _legajoActual)
-                        {
-                            dni = campos[3];
-                            fechaIngreso = campos[4];
-                            break;
-                        }
+                        fechaIngreso = personaLine.Split(';')[4];
                     }
                 }
 
-                // Formato: idOperacion;legajo;nombre;apellido;dni;fecha_ingreso
-                string registroOperacion = $"{nuevoId};{_legajoActual};{txtNombre.Text};{txtApellido.Text};{dni};{fechaIngreso}";
-                bool agregarSalto = false;
-                if (File.Exists(rutaOperacion))
+                // 2. Gestionar la operación en el archivo de pendientes
+                string rutaOperacion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Persistencia\DataBase\Tablas\operacion_cambio_persona.csv");
+                var lineasOperacion = File.ReadAllLines(rutaOperacion).ToList();
+                
+                string header = lineasOperacion.Count > 0 ? lineasOperacion[0] : "idOperacion;legajo;nombre;apellido;dni;fecha_ingreso";
+                if (lineasOperacion.Count > 0)
                 {
-                    var info = new FileInfo(rutaOperacion);
-                    if (info.Length > 0)
-                    {
-                        using (var fs = new FileStream(rutaOperacion, FileMode.Open, FileAccess.Read))
-                        {
-                            fs.Seek(-1, SeekOrigin.End);
-                            int lastByte = fs.ReadByte();
-                            agregarSalto = lastByte != '\n' && lastByte != '\r';
-                        }
-                    }
+                    lineasOperacion.RemoveAt(0);
                 }
-                using (StreamWriter sw = new StreamWriter(rutaOperacion, true))
-                {
-                    if (agregarSalto) sw.WriteLine();
-                    sw.WriteLine(registroOperacion);
-                }
+                
+                // Remover cualquier solicitud pendiente anterior para el mismo legajo
+                lineasOperacion.RemoveAll(line => line.Split(';')[1] == _legajoActual);
+                
+                // Crear el nuevo registro de operación
+                int nuevoId = _operacionPersistencia.ObtenerSiguienteId();
+                string registroOperacion = $"{nuevoId};{_legajoActual};{txtNombre.Text};{txtApellido.Text};{txtDni.Text};{fechaIngreso}";
+                lineasOperacion.Add(registroOperacion);
+                
+                lineasOperacion.Insert(0, header);
+                File.WriteAllLines(rutaOperacion, lineasOperacion);
 
                 MessageBox.Show("La solicitud de modificación ha sido registrada y está pendiente de autorización.", 
                     "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);

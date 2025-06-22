@@ -15,16 +15,33 @@ namespace TemplateTPCorto
 {
     public partial class FormCargarVenta : Form
     {
+        private class ProductoEnCarrito
+        {
+            private readonly Producto _producto;
+            public int Cantidad { get; set; }
+
+            public ProductoEnCarrito(Producto producto, int cantidad)
+            {
+                _producto = producto;
+                Cantidad = cantidad;
+            }
+
+            public Guid Id => _producto.Id;
+            public string Nombre => _producto.Nombre;
+            public int Precio => _producto.Precio;
+            public int StockDisponible => _producto.Stock;
+        }
+
         private Cliente _cliente;
         private VentasNegocio _ventasNegocio;
-        private List<Producto> _productosEnCarrito;
+        private List<ProductoEnCarrito> _productosEnCarrito;
 
         public FormCargarVenta(Cliente cliente)
         {
             InitializeComponent();
             _cliente = cliente;
             _ventasNegocio = new VentasNegocio();
-            _productosEnCarrito = new List<Producto>();
+            _productosEnCarrito = new List<ProductoEnCarrito>();
         }
 
         private void FormCargarVenta_Load(object sender, EventArgs e)
@@ -41,7 +58,7 @@ namespace TemplateTPCorto
             {
                 var categorias = _ventasNegocio.obtenerCategoriaProductos();
                 comboCategorias.DataSource = categorias;
-                comboCategorias.DisplayMember = "Descripcion";
+                comboCategorias.DisplayMember = "DisplayText";
                 comboCategorias.ValueMember = "Id";
             }
             catch (Exception ex)
@@ -52,19 +69,64 @@ namespace TemplateTPCorto
 
         private void ConfigurarGrids()
         {
-            // Configurar DataGridView de productos
-            gridProductos.AutoGenerateColumns = false;
-            gridProductos.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "Id", Visible = false });
-            gridProductos.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
-            gridProductos.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "Precio", Width = 70 });
-            gridProductos.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Stock", DataPropertyName = "Stock", Width = 50 });
+            // Estilo general
+            this.BackColor = Color.FromArgb(240, 240, 240);
+            
+            // Estilo de botones
+            btnAgregar.BackColor = Color.FromArgb(40, 167, 69); // Verde
+            btnAgregar.FlatStyle = FlatStyle.Flat;
+            btnAgregar.FlatAppearance.BorderSize = 0;
+            btnAgregar.ForeColor = Color.White;
+            btnAgregar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
 
-            // Configurar DataGridView del carrito
+            btnEliminar.BackColor = Color.FromArgb(220, 53, 69); // Rojo
+            btnEliminar.FlatStyle = FlatStyle.Flat;
+            btnEliminar.FlatAppearance.BorderSize = 0;
+            btnEliminar.ForeColor = Color.White;
+            btnEliminar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+
+            btnConfirmarVenta.BackColor = Color.FromArgb(0, 123, 255); // Azul primario
+            btnConfirmarVenta.FlatStyle = FlatStyle.Flat;
+            btnConfirmarVenta.FlatAppearance.BorderSize = 0;
+            btnConfirmarVenta.ForeColor = Color.White;
+            btnConfirmarVenta.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+
+            // Estilo de DataGridView
+            ConfigurarEstiloGrid(gridProductos);
+            ConfigurarEstiloGrid(gridCarrito);
+
+            // Limpiar columnas para evitar duplicados en recargas
+            gridProductos.Columns.Clear();
+            gridCarrito.Columns.Clear();
+
+            // Configurar columnas de productos
+            gridProductos.AutoGenerateColumns = false;
+            gridProductos.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 250, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            gridProductos.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "Precio", Width = 100, DefaultCellStyle = { Format = "C2" } });
+            gridProductos.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Stock", DataPropertyName = "Stock", Width = 70 });
+
+            // Configurar columnas del carrito
             gridCarrito.AutoGenerateColumns = false;
             gridCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "ID", DataPropertyName = "Id", Visible = false });
-            gridCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 200 });
-            gridCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "Precio", Width = 70 });
-            gridCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cantidad", DataPropertyName = "Stock", Width = 60 }); // Usamos 'Stock' para la cantidad
+            gridCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nombre", DataPropertyName = "Nombre", Width = 150, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            gridCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Precio", DataPropertyName = "Precio", Width = 80, DefaultCellStyle = { Format = "C2" } });
+            gridCarrito.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Cantidad", DataPropertyName = "Cantidad", Width = 60 });
+        }
+
+        private void ConfigurarEstiloGrid(DataGridView grid)
+        {
+            grid.BorderStyle = BorderStyle.None;
+            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(224, 224, 224);
+            grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 123, 255);
+            grid.DefaultCellStyle.SelectionForeColor = Color.White;
+            grid.BackgroundColor = Color.White;
+
+            grid.EnableHeadersVisualStyles = false;
+            grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(45, 62, 80);
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
         }
 
         private void comboCategorias_SelectedIndexChanged(object sender, EventArgs e)
@@ -94,38 +156,36 @@ namespace TemplateTPCorto
             if (gridProductos.CurrentRow == null) return;
 
             var productoSeleccionado = (Producto)gridProductos.CurrentRow.DataBoundItem;
-            int cantidad = (int)numericCantidad.Value;
+            int cantidadAAgregar = (int)numericCantidad.Value;
 
-            if (cantidad <= 0)
+            if (cantidadAAgregar <= 0)
             {
                 MessageBox.Show("La cantidad debe ser mayor a cero.", "Cantidad inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (cantidad > productoSeleccionado.Stock)
+            if (cantidadAAgregar > productoSeleccionado.Stock)
             {
-                MessageBox.Show("La cantidad solicitada supera el stock disponible.", "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"La cantidad solicitada ({cantidadAAgregar}) supera el stock disponible ({productoSeleccionado.Stock}).", "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Verificar si el producto ya está en el carrito
             var productoEnCarrito = _productosEnCarrito.FirstOrDefault(p => p.Id == productoSeleccionado.Id);
+            
             if (productoEnCarrito != null)
             {
-                // Actualizar cantidad si ya existe
-                productoEnCarrito.Stock += cantidad;
+                int cantidadPrevia = productoEnCarrito.Cantidad;
+                if (cantidadPrevia + cantidadAAgregar > productoSeleccionado.Stock)
+                {
+                    MessageBox.Show($"No se puede agregar. La cantidad en carrito ({cantidadPrevia}) más la cantidad a agregar ({cantidadAAgregar}) supera el stock disponible ({productoSeleccionado.Stock}).", "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                productoEnCarrito.Cantidad += cantidadAAgregar;
             }
             else
             {
-                // Clonar producto y agregarlo con la cantidad seleccionada
-                var nuevoProductoParaCarrito = new Producto
-                {
-                    Id = productoSeleccionado.Id,
-                    Nombre = productoSeleccionado.Nombre,
-                    Precio = productoSeleccionado.Precio,
-                    Stock = cantidad // Usamos Stock para guardar la cantidad
-                };
-                _productosEnCarrito.Add(nuevoProductoParaCarrito);
+                _productosEnCarrito.Add(new ProductoEnCarrito(productoSeleccionado, cantidadAAgregar));
             }
 
             ActualizarCarrito();
@@ -135,8 +195,8 @@ namespace TemplateTPCorto
         {
             if (gridCarrito.CurrentRow == null) return;
 
-            var productoSeleccionado = (Producto)gridCarrito.CurrentRow.DataBoundItem;
-            _productosEnCarrito.Remove(productoSeleccionado);
+            var itemSeleccionado = (ProductoEnCarrito)gridCarrito.CurrentRow.DataBoundItem;
+            _productosEnCarrito.Remove(itemSeleccionado);
 
             ActualizarCarrito();
         }
@@ -144,16 +204,20 @@ namespace TemplateTPCorto
         private void ActualizarCarrito()
         {
             gridCarrito.DataSource = null;
-            gridCarrito.DataSource = _productosEnCarrito;
+            if (_productosEnCarrito.Any())
+            {
+                gridCarrito.DataSource = _productosEnCarrito;
+            }
             gridCarrito.Refresh();
 
             CalcularTotales();
             numericCantidad.Value = 1;
+            btnEliminar.Enabled = false;
         }
 
         private void CalcularTotales()
         {
-            decimal subtotal = _productosEnCarrito.Sum(p => p.Precio * p.Stock); // Stock es la cantidad
+            decimal subtotal = _productosEnCarrito.Sum(p => p.Precio * p.Cantidad);
             decimal descuento = _ventasNegocio.CalcularDescuento(subtotal);
             decimal totalFinal = subtotal - descuento;
 
@@ -173,7 +237,7 @@ namespace TemplateTPCorto
             try
             {
                 var productosVenta = _productosEnCarrito.Select(p =>
-                    new Tuple<Guid, int>(p.Id, p.Stock) // Stock es la cantidad
+                    new Tuple<Guid, int>(p.Id, p.Cantidad)
                 ).ToList();
 
                 bool ventaExitosa = _ventasNegocio.procesarVentaCompleta(productosVenta, _cliente.Id);
@@ -192,6 +256,23 @@ namespace TemplateTPCorto
             {
                 MessageBox.Show($"Ocurrió un error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void gridProductos_SelectionChanged(object sender, EventArgs e)
+        {
+            if (gridProductos.CurrentRow != null && gridProductos.CurrentRow.DataBoundItem is Producto)
+            {
+                btnAgregar.Enabled = true;
+            }
+            else
+            {
+                btnAgregar.Enabled = false;
+            }
+        }
+
+        private void gridCarrito_SelectionChanged(object sender, EventArgs e)
+        {
+            btnEliminar.Enabled = gridCarrito.SelectedRows.Count > 0;
         }
     }
 } 

@@ -10,20 +10,25 @@ namespace Datos
     public class CategoriaProductos
     {
         String _id;
-        String _detalle;
+        String _descripcion;
 
         public string Id { get => _id; set => _id = value; }
-        public string Detalle { get => _detalle; set => _detalle = value; }
+        public string Descripcion { get => _descripcion; set => _descripcion = value; }
 
-        public CategoriaProductos(string id, string detalle)
+        public string DisplayText
+        {
+            get { return $"{_id} ({_descripcion})"; }
+        }
+
+        public CategoriaProductos(string id, string descripcion)
         {
             _id = id;
-            _detalle = detalle;
+            _descripcion = descripcion;
         }
 
         public override string ToString()
         {
-            return Detalle;
+            return this.Descripcion;
         }
     }
 }
